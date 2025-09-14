@@ -1,4 +1,5 @@
 from object import Object
+
 class Player(Object):
   def __init__(
     self, 
@@ -8,7 +9,7 @@ class Player(Object):
     nationality = None, #optional
     position = None #optional
   ):
-    if not (name == None or name == None):
+    if not (name is None or age is None):
       self.name = name
       self.age = age
       self.number = number if number is not None else None
@@ -18,29 +19,29 @@ class Player(Object):
       super().__init__()
 
   # TODO COMPLETE THE EXTENTION FROM OBJECT!!
+  def __str__(self):
+    return f"- Player: {self.name}, Age: {self.age}, Number: {self.number} , Nationality: {self.nationality}, Position: {self.position}"
     
 if __name__ == '__main__':
-
-  # Creating a single player
   print("=================SINGLE PLAYER=================")
   single_player = Player('Carlos', 21)
   single_player2 = Player('Pamela', 19, 16, 'Mexico', 'Goalkeeper')
   single_player3 = Player('Jose', 32, 2, 'Mexico', 'Defensor')
   single_player4 = Player('Luis', 45, 76)
-  print(single_player)
-
 
   print("=================PLAYERS ARRAY=================")
   players_array = Player()
-  players_array.add_player(single_player)
-  players_array.add_player(single_player2)
-  players_array.add_player(single_player3)
-  players_array.add_player(single_player4)
+  players_array.add(single_player)
+  players_array.add(single_player2)
+  players_array.add(single_player3)
+  players_array.add(single_player4)
 
-  players_array.update_player(index=0, new_name='Carlos A.', new_age=22, new_number=10, new_nationality='Mexico', new_position='Midfielder')
-  players_array.update_player(index=1, new_age=20)
-  players_array.remove_player(index=2)
-  players_array.list_players()
+  # updates Jose to Ana
+  players_array.update(index=3, object_element=Player('Ana', 29, 10, 'Spain', 'Midfielder'))
+  # removes Luis
+  players_array.remove(index=2)
+  players_array.list()
+
 
   
 
