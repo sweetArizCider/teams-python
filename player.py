@@ -9,17 +9,21 @@ class Player(Object):
     nationality = None, #optional
     position = None #optional
   ):
-    if not (name is None or age is None):
+    is_array = (name is None and age is None)
+    super().__init__(is_array=is_array)
+
+    if not self.is_array:
+      if name is None or age is None:
+        raise ValueError("Both 'name' and 'age' are required for a Player.")
       self.name = name
       self.age = age
-      self.number = number if number is not None else None
-      self.nationality = nationality if nationality is not None else None
-      self.position = position if position is not None else None
-    else:
-      super().__init__()
+      self.number = number
+      self.nationality = nationality
+      self.position = position
 
-  # TODO COMPLETE THE EXTENTION FROM OBJECT!!
   def __str__(self):
+    if self.is_array:
+      return super().__str__()
     return f"- Player: {self.name}, Age: {self.age}, Number: {self.number} , Nationality: {self.nationality}, Position: {self.position}"
     
 if __name__ == '__main__':
@@ -41,6 +45,7 @@ if __name__ == '__main__':
   # removes Luis
   players_array.remove(index=2)
   players_array.list()
+  print(players_array)
 
 
   

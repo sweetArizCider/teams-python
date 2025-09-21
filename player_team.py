@@ -4,14 +4,21 @@ from object import Object
 
 class PlayerTeam(Object):
   def __init__(self, team: Team = None, players: list[Player] = None):
-    if not (team is None or players is None):
+    is_array = (team is None and players is None)
+    super().__init__(is_array=is_array)
+
+    if not self.is_array:
+      if team is None or players is None:
+        raise ValueError("Both 'team' and 'players' are required for a PlayerTeam.")
       self.team = team
       self.players = players
-    else:
-      super().__init__()
-  
+
   def __str__(self):
-    return f"Team_Object: {self.team},\nPlayers count: {len(self.players)}, \nPlayers_Object: {', '.join([player.name for player in self.players])}"
+    if self.is_array:
+      return super().__str__()
+    team_str = str(self.team)
+    player_names = ", ".join(player.name for player in self.players)
+    return f"Team_Object: {team_str},\nPlayers count: {len(self.players)}, \nPlayers_Object: {player_names}"
 
 if __name__ == '__main__':
   cruz_azul = Team('Cruz Azul', 'Soccer', 'Mexico City')
@@ -30,3 +37,4 @@ if __name__ == '__main__':
   players_team_array.add(player_team2)
   players_team_array.update(index=1, object_element=PlayerTeam(pumas, [ana, luis, sofia]))
   players_team_array.list()
+  print(players_team_array)
