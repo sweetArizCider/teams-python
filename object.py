@@ -42,25 +42,21 @@ class Object:
 
   def dictionary(self):
     object_array = getattr(self, "object_array", None)
-    is_object_array = isinstance(object_array, list)
+    excluded_properties = {"is_array", "object_array"}
 
-    if is_object_array:
-      result = []
-      for object in object_array:
-        if hasattr(object, "dictionary") and callable(object.dictionary):
-          result.append(object.dictionary())
-        elif hasattr(object, "__dict__"):
-          fields_dict = {
-            field_name: field_value
-            for field_name, field_value in object.__dict__.items()
-            if field_name not in ("is_array", "object_array")
-          }
-          result.append(fields_dict)
-        else:
-          result.append({"value": str(object)})
-      return result
+    if isinstance(object_array, list):
+      return [object.dictionary() for object in object_array]
 
     if hasattr(self, "__dict__"):
-      return {k: v for k, v in self.__dict__.items() if k not in ("is_array", "object_array")}
-    return {"value": str(self)}
-  
+      return {
+        object_property_key: object_property_value
+        for object_property_key, object_property_value in self.__dict__.items()
+        if object_property_key not in excluded_properties
+      }
+    return None
+
+
+
+
+
+

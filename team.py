@@ -45,5 +45,6 @@ if __name__ == '__main__':
   teams_array.list()
   # print how many teams are in the array
   print(teams_array)
-  print(teams_array.to_dict())
-  print(single_team.to_dict())
+  print("=================TEAMS ARRAY=================")
+  print(teams_array.dictionary())
+  print(single_team.dictionary())

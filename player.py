@@ -40,13 +40,16 @@ if __name__ == '__main__':
   players_array.add(single_player3)
   players_array.add(single_player4)
 
+
   # updates Jose to Ana
   players_array.update(index=3, object_element=Player('Ana', 29, 10, 'Spain', 'Midfielder'))
   # removes Luis
   players_array.remove(index=2)
   players_array.list()
   print(players_array)
-
+  print("=================PLAYERS ARRAY=================")
+  print(players_array.dictionary())
+  print(single_player.dictionary())
 
   
 
