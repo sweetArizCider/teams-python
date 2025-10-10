@@ -1,6 +1,7 @@
 from team import Team
 from player import Player
 from object import Object
+import json
 
 def json_to_object(json):
   team_data = json['Team']
@@ -10,14 +11,13 @@ def json_to_object(json):
 
   players_array_instance = Player()
 
-  # Add each player from the players data
-  for player_dict in players_data:
+  for player_json in players_data:
     temporal_player = Player(
-      player_dict['name'],
-      player_dict['age'],
-      player_dict.get('number'),
-      player_dict.get('nationality'),
-      player_dict.get('position')
+      player_json['name'],
+      player_json['age'],
+      player_json.get('number'),
+      player_json.get('nationality'),
+      player_json.get('position')
     )
     players_array_instance.add(temporal_player)
 
@@ -48,30 +48,45 @@ class PlayerTeam(Object):
       }
     return [object.dictionary_team() for object in self.object_array]
 
+  def to_json_file(self, filename):
+    data = self.dictionary_team()
+
+    with open(filename, 'w', encoding='utf-8') as json_file:
+      json.dump(data, json_file, indent=2, ensure_ascii=False)
+    print(f"PlayerTeam saved to {filename}")
+
+  def json_to_object(self, json_file):
+    with open(json_file, 'r', encoding='utf-8') as json_file_data:
+      data = json.load(json_file_data)
+
+    if isinstance(data, list):
+      object_array_instance = self.__class__()
+      for item in data:
+        temporal_object = json_to_object(item)
+        object_array_instance.add(temporal_object)
+      return object_array_instance
+    return json_to_object(data)
 
 if __name__ == '__main__':
-  cruz_azul = Team('Cruz Azul', 'Soccer', 'Mexico City')
-  print("=================SINGLE PLAYER=================")
-  single_player = Player('Carlos', 21)
-  single_player2 = Player('Pamela', 19, 16, 'Mexico', 'Goalkeeper')
-  single_player3 = Player('Jose', 32, 2, 'Mexico', 'Defensor')
-  single_player4 = Player('Luis', 45, 76)
-
-  print("=================PLAYERS ARRAY=================")
+  """""
+  single_team = Team('Barcelona', 'Soccer', 'Barcelona')
   players_array = Player()
-  players_array.add(single_player)
-  players_array.add(single_player2)
-  players_array.add(single_player3)
-  players_array.add(single_player4)
+  players_array.add(Player('Lionel Messi', 36, 10, 'Argentina', 'Forward'))
+  players_array.add(Player('Xavi Hernandez', 42, 6, 'Spain', 'Midfielder'))
 
-  player_team = PlayerTeam(cruz_azul, players_array)
+  single_player_team = PlayerTeam(single_team, players_array)
+  single_player_team.to_json_file('single_player_team.json')
 
-  players_team_array = PlayerTeam()
-  players_team_array.add(player_team)
-  players_team_array.list()
+  
+  single_team = Team('Barcelona', 'Soccer', 'Barcelona')
+  players_array = Player()
+  players_array.add(Player('Lionel Messi', 36, 10, 'Argentina', 'Forward'))
+  players_array.add(Player('Xavi Hernandez', 42, 6, 'Spain', 'Midfielder'))
 
-  print("=================PLAYERS TEAM ARRAY=================")
-  cruz_azul_json = player_team.dictionary_team()
-  print(cruz_azul_json)
-  cruz_azul_object = json_to_object(cruz_azul_json)
-  print(cruz_azul_object)
+  single_player_team = PlayerTeam(single_team, players_array)
+  single_player_team.to_json_file('single_player_team.json')
+"""
+  players_array_instance = PlayerTeam()
+  loaded_team_object = players_array_instance.json_to_object('single_player_team.json')
+  loaded_team_object.to_json_file('test.json')
+  print(loaded_team_object)

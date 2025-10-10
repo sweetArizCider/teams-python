@@ -27,30 +27,21 @@ class Player(Object):
     return f"- Player: {self.name}, Age: {self.age}, Number: {self.number} , Nationality: {self.nationality}, Position: {self.position}"
     
 if __name__ == '__main__':
-  print("=================SINGLE PLAYER=================")
-  single_player = Player('Carlos', 21)
-  single_player2 = Player('Pamela', 19, 16, 'Mexico', 'Goalkeeper')
-  single_player3 = Player('Jose', 32, 2, 'Mexico', 'Defensor')
-  single_player4 = Player('Luis', 45, 76)
+  single_player = Player('Lionel Messi', 36, 10, 'Argentina', 'Forward')
+  single_player.to_json_file('single_player.json')
 
-  print("=================PLAYERS ARRAY=================")
-  players_array = Player()
-  players_array.add(single_player)
-  players_array.add(single_player2)
-  players_array.add(single_player3)
-  players_array.add(single_player4)
+  players = Player()
+  players.add(Player('Cristiano Ronaldo', 39, 7, 'Portugal', 'Forward'))
+  players.add(Player('Neymar Jr', 32, 10, 'Brazil', 'Forward'))
+  players.list()
+  players.to_json_file('players.json')
 
+  player_instance = Player()
+  loaded_players = player_instance.json_to_object('players.json')
+  print("\nLoaded players:")
+  print(loaded_players)
 
-  # updates Jose to Ana
-  players_array.update(index=3, object_element=Player('Ana', 29, 10, 'Spain', 'Midfielder'))
-  # removes Luis
-  players_array.remove(index=2)
-  players_array.list()
-  print(players_array)
-  print("=================PLAYERS ARRAY=================")
-  print(players_array.dictionary())
-  print(single_player.dictionary())
-
+  loaded_players.list()
   
 
   

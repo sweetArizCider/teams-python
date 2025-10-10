@@ -23,28 +23,18 @@ class Team(Object):
     return f"- Team: {self.name}, Sport: {self.sport}, City: {self.city}"
 
 if __name__ == '__main__':
-  # Creating a single team
-  #"=================SINGLE TEAM=================")
-  single_team = Team('Cruz Azul', 'Soccer', 'Mexico City')
-  single_team2 = Team('Santos Laguna', 'Soccer', 'Torreon')
-  single_team3 = Team('Toluca', 'Soccer', 'Edo Mex')
-  single_team4 = Team('Vikings', 'Football', 'Minesotta')
+  single_team = Team('Barcelona', 'Soccer', 'Barcelona')
+  single_team.to_json_file('single_team.json')
 
-  #"=================TEAMS ARRAY=================")
-  teams_array = Team()
-  teams_array.add(single_team)
-  teams_array.add(single_team2)
-  teams_array.add(single_team3)
-  teams_array.add(single_team4)
+  teams = Team()
+  teams.add(Team('Real Madrid', 'Soccer', 'Madrid'))
+  teams.add(Team('Atletico Madrid', 'Soccer', 'Madrid'))
+  teams.list()
+  teams.to_json_file('teams.json')
 
-  # updates Toluca to Pumas
-  teams_array.update(index=2, object_element=Team('Pumas', 'Soccer', 'CDMX'))
-  # removes Vikings
-  teams_array.remove(index=3)
-  # lists all teams
-  teams_array.list()
-  # print how many teams are in the array
-  print(teams_array)
-  print("=================TEAMS ARRAY=================")
-  print(teams_array.dictionary())
-  print(single_team.dictionary())
+  team_instance = Team()
+  loaded_teams = team_instance.json_to_object('teams.json')
+  print("\nLoaded single teams:")
+  print(loaded_teams)
+
+  loaded_teams.list()
