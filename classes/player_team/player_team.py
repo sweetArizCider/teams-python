@@ -1,5 +1,5 @@
 from team import Team
-from player import Player
+from classes.player.player import Player
 from object import Object
 import json
 
@@ -68,24 +68,6 @@ class PlayerTeam(Object):
     return json_to_object(data)
 
 if __name__ == '__main__':
-  """""
-  single_team = Team('Barcelona', 'Soccer', 'Barcelona')
-  players_array = Player()
-  players_array.add(Player('Lionel Messi', 36, 10, 'Argentina', 'Forward'))
-  players_array.add(Player('Xavi Hernandez', 42, 6, 'Spain', 'Midfielder'))
-
-  single_player_team = PlayerTeam(single_team, players_array)
-  single_player_team.to_json_file('single_player_team.json')
-
-  
-  single_team = Team('Barcelona', 'Soccer', 'Barcelona')
-  players_array = Player()
-  players_array.add(Player('Lionel Messi', 36, 10, 'Argentina', 'Forward'))
-  players_array.add(Player('Xavi Hernandez', 42, 6, 'Spain', 'Midfielder'))
-
-  single_player_team = PlayerTeam(single_team, players_array)
-  single_player_team.to_json_file('single_player_team.json')
-"""
   players_array_instance = PlayerTeam()
   loaded_team_object = players_array_instance.json_to_object('single_player_team.json')
   loaded_team_object.to_json_file('test.json')

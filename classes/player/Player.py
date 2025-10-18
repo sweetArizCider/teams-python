@@ -1,4 +1,4 @@
-from object import Object
+from classes.object.object import Object
 
 class Player(Object):
   def __init__(
@@ -24,7 +24,7 @@ class Player(Object):
   def __str__(self):
     if self.is_array:
       return super().__str__()
-    return f"- Player: {self.name}, Age: {self.age}, Number: {self.number} , Nationality: {self.nationality}, Position: {self.position}"
+    return f"Name: {self.name}, Age: {self.age}, Number: {self.number} , Nationality: {self.nationality}, Position: {self.position}"
     
 if __name__ == '__main__':
   single_player = Player('Lionel Messi', 36, 10, 'Argentina', 'Forward')
@@ -35,6 +35,7 @@ if __name__ == '__main__':
   players.add(Player('Neymar Jr', 32, 10, 'Brazil', 'Forward'))
   players.list()
   players.to_json_file('players.json')
+  players.remove(3)
 
   player_instance = Player()
   loaded_players = player_instance.json_to_object('players.json')

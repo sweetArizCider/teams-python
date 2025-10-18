@@ -23,18 +23,4 @@ class Team(Object):
     return f"- Team: {self.name}, Sport: {self.sport}, City: {self.city}"
 
 if __name__ == '__main__':
-  single_team = Team('Barcelona', 'Soccer', 'Barcelona')
-  single_team.to_json_file('single_team.json')
-
-  teams = Team()
-  teams.add(Team('Real Madrid', 'Soccer', 'Madrid'))
-  teams.add(Team('Atletico Madrid', 'Soccer', 'Madrid'))
-  teams.list()
-  teams.to_json_file('teams.json')
-
-  team_instance = Team()
-  loaded_teams = team_instance.json_to_object('teams.json')
-  print("\nLoaded single teams:")
-  print(loaded_teams)
-
-  loaded_teams.list()
+  print('hello')
