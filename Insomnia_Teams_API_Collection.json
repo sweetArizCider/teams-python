@@ -1,0 +1,353 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2024-10-22T10:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_players_get_all",
+      "parentId": "fld_players",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players/",
+      "name": "Get All Players",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_players_create",
+      "parentId": "fld_players",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players/",
+      "name": "Create Player",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Lionel Messi\",\n  \"age\": 36,\n  \"number\": 10,\n  \"nationality\": \"Argentina\",\n  \"position\": \"Forward\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_players_get_by_id",
+      "parentId": "fld_players",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players/{{ _.player_id }}",
+      "name": "Get Player by ID",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_players_update",
+      "parentId": "fld_players",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players/{{ _.player_id }}",
+      "name": "Update Player",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Lionel Messi\",\n  \"age\": 37,\n  \"number\": 10,\n  \"nationality\": \"Argentina\",\n  \"position\": \"Right Winger\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_players_delete",
+      "parentId": "fld_players",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players/{{ _.player_id }}",
+      "name": "Delete Player",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_teams_get_all",
+      "parentId": "fld_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/teams/",
+      "name": "Get All Teams",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_teams_create",
+      "parentId": "fld_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/teams/",
+      "name": "Create Team",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"FC Barcelona\",\n  \"sport\": \"Football\",\n  \"city\": \"Barcelona\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_teams_get_by_id",
+      "parentId": "fld_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/teams/{{ _.team_id }}",
+      "name": "Get Team by ID",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_teams_update",
+      "parentId": "fld_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/teams/{{ _.team_id }}",
+      "name": "Update Team",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"FC Barcelona\",\n  \"sport\": \"Football\",\n  \"city\": \"Barcelona, Spain\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_teams_delete",
+      "parentId": "fld_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/teams/{{ _.team_id }}",
+      "name": "Delete Team",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_player_teams_get_all",
+      "parentId": "fld_player_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players_team/",
+      "name": "Get All Player-Team Relationships",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_player_teams_create",
+      "parentId": "fld_player_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players_team/",
+      "name": "Create Player-Team Relationship",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"player_id\": \"{{ _.player_id }}\",\n  \"team_id\": \"{{ _.team_id }}\",\n  \"position\": \"Right Winger\",\n  \"jersey_number\": 10,\n  \"start_date\": \"2023-08-01\",\n  \"end_date\": null,\n  \"is_active\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_player_teams_get_players_by_team",
+      "parentId": "fld_player_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players_team/team/{{ _.team_id }}/players",
+      "name": "Get Players by Team",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_player_teams_get_teams_by_player",
+      "parentId": "fld_player_teams",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "url": "{{ _.base_url }}/players_team/player/{{ _.player_id }}/teams",
+      "name": "Get Teams by Player",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1697970000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_players",
+      "parentId": "wrk_main",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "name": "Players",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1697970000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_teams",
+      "parentId": "wrk_main",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "name": "Teams",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1697970000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_player_teams",
+      "parentId": "wrk_main",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "name": "Player-Team Relationships",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1697970000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "name": "Teams Python MongoDB API",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_main",
+      "modified": 1697970000000,
+      "created": 1697970000000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8000",
+        "player_id": "",
+        "team_id": "",
+        "relationship_id": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "player_id", "team_id", "relationship_id"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1697970000000,
+      "_type": "environment"
+    }
+  ]
+}
+

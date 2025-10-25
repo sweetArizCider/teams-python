@@ -1,29 +1,74 @@
-from classes.player.PlayerInterface import PlayerRequest, PlayerArrayRequest
+from bson import ObjectId
+from typing import Dict, Any
+from classes.database.database import mongodb_service
 from classes.player.Player import Player
+from classes.player.PlayerInterface import PlayerRequest
+from constants.response_constants import ServerStatus
+import logging
 
+logger = logging.getLogger(__name__)
+SERVER_STATUS = ServerStatus()
 
-def update_player_in_array(players_array_data: PlayerArrayRequest, index: int, updated_player_data: PlayerRequest):
-  players_array_instance = Player()
+class PlayerUpdateHandler:
+    def __init__(self):
+        self.collection = mongodb_service.get_players_collection()
 
-  if players_array_data.object_array:
-    for player_req in players_array_data.object_array:
-      existing_player = Player(
-          name=player_req.name,
-          age=player_req.age,
-          number=player_req.number,
-          nationality=player_req.nationality,
-          position=player_req.position
-      )
-      players_array_instance.add(existing_player)
+    def update_player(self, player_id: str, player_request: PlayerRequest) -> Dict[str, Any]:
+        """Update a player using the Player class"""
+        try:
+            # Validate ObjectId format
+            if not ObjectId.is_valid(player_id):
+                return {
+                    "status": SERVER_STATUS.BAD_REQUEST.CODE,
+                    "message": "Invalid player ID format"
+                }
 
-  updated_player = Player(
-    name=updated_player_data.name,
-    age=updated_player_data.age,
-    number=updated_player_data.number,
-    nationality=updated_player_data.nationality,
-    position=updated_player_data.position
-  )
+            # Create Player instance with updated data
+            updated_player = Player(
+                name=player_request.name,
+                age=player_request.age,
+                number=player_request.number,
+                nationality=player_request.nationality,
+                position=player_request.position
+            )
 
-  players_array_instance.update(index, updated_player)
+            # Use your existing dictionary() method from Object class
+            update_data = updated_player.dictionary()
 
-  return players_array_instance
+            # Update in MongoDB
+            result = self.collection.update_one(
+                {"_id": ObjectId(player_id)},
+                {"$set": update_data}
+            )
+
+            if result.matched_count == 0:
+                return {
+                    "status": SERVER_STATUS.NOT_FOUND.CODE,
+                    "message": "Player not found"
+                }
+
+            # Get the updated player from MongoDB
+            updated_player_doc = self.collection.find_one({"_id": ObjectId(player_id)})
+            updated_player_doc["_id"] = str(updated_player_doc["_id"])
+
+            return {
+                "status": SERVER_STATUS.SUCCESS.CODE,
+                "message": "Player updated successfully",
+                "data": updated_player_doc
+            }
+
+        except ValueError as ve:
+            logger.error(f"Validation error updating player {player_id}: {str(ve)}")
+            return {
+                "status": SERVER_STATUS.BAD_REQUEST.CODE,
+                "message": f"Validation error: {str(ve)}"
+            }
+        except Exception as e:
+            logger.error(f"Error updating player {player_id}: {str(e)}")
+            return {
+                "status": SERVER_STATUS.INTERNAL_SERVER_ERROR.CODE,
+                "message": f"{SERVER_STATUS.INTERNAL_SERVER_ERROR.MESSAGE}: {str(e)}"
+            }
+
+# Create a global instance
+player_update_handler = PlayerUpdateHandler()

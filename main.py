@@ -9,7 +9,7 @@ app = FastAPI()
 router = APIRouter()
 
 origins = [
-    "http://localhost:5173"
+    "http://localhost:3000"
 ]
 
 app.add_middleware(
@@ -20,6 +20,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(player_router, prefix="/player")
-app.include_router(players_team_router, prefix='/players_teams')
+app.include_router(player_router, prefix="/players")
+app.include_router(players_team_router, prefix='/players_team')
 app.include_router(team_router, prefix='/teams')
+
+@app.get("/")
+async def root():
+    return {"message": "Teams Python MongoDB API is running!"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
