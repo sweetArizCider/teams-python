@@ -1,4 +1,4 @@
-from object import Object
+from classes.object.object import Object
 
 class Team(Object):
   def __init__(

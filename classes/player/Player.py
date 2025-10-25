@@ -43,6 +43,3 @@ if __name__ == '__main__':
   print(loaded_players)
 
   loaded_players.list()
-  
-
-  

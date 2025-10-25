@@ -1,6 +1,6 @@
-from team import Team
-from classes.player.player import Player
-from object import Object
+from classes.team.team import Team
+from classes.player.Player import Player
+from classes.object.object import Object
 import json
 
 def json_to_object(json):
