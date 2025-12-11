@@ -1,6 +1,8 @@
 from bson import ObjectId
 from typing import Dict, Any, List
 from classes.database.database import mongodb_service
+from classes.database.json_storage import json_storage
+from classes.database.sync_service import sync_service
 from classes.player_team.player_team import PlayerTeam
 from classes.team.team import Team
 from classes.player.Player import Player
@@ -12,13 +14,40 @@ SERVER_STATUS = ServerStatus()
 
 class PlayerTeamRetrieveHandler:
     def __init__(self):
-        self.collection = mongodb_service.get_players_team_collection()
-        self.players_collection = mongodb_service.get_players_collection()
-        self.teams_collection = mongodb_service.get_teams_collection()
+        self.collection = None
+        self.players_collection = None
+        self.teams_collection = None
+        self._update_collections()
+
+    def _update_collections(self):
+        """Update collection references if not offline"""
+        if not mongodb_service.is_offline:
+            self.collection = mongodb_service.get_players_team_collection()
+            self.players_collection = mongodb_service.get_players_collection()
+            self.teams_collection = mongodb_service.get_teams_collection()
 
     def get_all_player_teams(self) -> Dict[str, Any]:
         """Get all player-team relationships using the PlayerTeam class array functionality"""
         try:
+            # Check connection and try to sync if reconnected
+            if mongodb_service.check_connection():
+                self._update_collections()
+                if json_storage.has_data():
+                    logger.info("Connection restored - syncing JSON data to MongoDB")
+                    sync_service.sync_all_to_mongodb()
+
+            # If offline, use JSON storage
+            if mongodb_service.is_offline:
+                logger.info("Using local JSON storage for player-team relationships")
+                relationships_data = json_storage.get_all_players_team()
+
+                # Return simplified data in offline mode
+                return {
+                    "status": SERVER_STATUS.SUCCESS.CODE,
+                    "message": SERVER_STATUS.SUCCESS.MESSAGE + " (offline mode)",
+                    "data": relationships_data
+                }
+
             # Get all documents from MongoDB
             relationships_data = list(self.collection.find())
 
@@ -90,14 +119,50 @@ class PlayerTeamRetrieveHandler:
 
         except Exception as e:
             logger.error(f"Error retrieving player-team relationships: {str(e)}")
-            return {
-                "status": SERVER_STATUS.INTERNAL_SERVER_ERROR.CODE,
-                "message": f"{SERVER_STATUS.INTERNAL_SERVER_ERROR.MESSAGE}: {str(e)}"
-            }
+            # Fallback to JSON storage
+            try:
+                logger.info("Falling back to JSON storage due to error")
+                relationships_data = json_storage.get_all_players_team()
+
+                return {
+                    "status": SERVER_STATUS.SUCCESS.CODE,
+                    "message": SERVER_STATUS.SUCCESS.MESSAGE + " (offline mode - fallback)",
+                    "data": relationships_data
+                }
+            except Exception as fallback_error:
+                logger.error(f"Fallback also failed: {str(fallback_error)}")
+                return {
+                    "status": SERVER_STATUS.INTERNAL_SERVER_ERROR.CODE,
+                    "message": f"{SERVER_STATUS.INTERNAL_SERVER_ERROR.MESSAGE}: {str(e)}"
+                }
 
     def get_player_team_by_id(self, relationship_id: str) -> Dict[str, Any]:
         """Get a specific player-team relationship by ID using PlayerTeam class"""
         try:
+            # Check connection and try to sync if reconnected
+            if mongodb_service.check_connection():
+                self._update_collections()
+                if json_storage.has_data():
+                    logger.info("Connection restored - syncing JSON data to MongoDB")
+                    sync_service.sync_all_to_mongodb()
+
+            # If offline, use JSON storage
+            if mongodb_service.is_offline:
+                logger.info(f"Using local JSON storage for player-team {relationship_id}")
+                rel_doc = json_storage.get_player_team_by_id(relationship_id)
+
+                if not rel_doc:
+                    return {
+                        "status": SERVER_STATUS.NOT_FOUND.CODE,
+                        "message": "Player-team relationship not found"
+                    }
+
+                return {
+                    "status": SERVER_STATUS.SUCCESS.CODE,
+                    "message": SERVER_STATUS.SUCCESS.MESSAGE + " (offline mode)",
+                    "data": rel_doc
+                }
+
             # Validate ObjectId format
             if not ObjectId.is_valid(relationship_id):
                 return {
@@ -165,10 +230,28 @@ class PlayerTeamRetrieveHandler:
 
         except Exception as e:
             logger.error(f"Error retrieving player-team relationship {relationship_id}: {str(e)}")
-            return {
-                "status": SERVER_STATUS.INTERNAL_SERVER_ERROR.CODE,
-                "message": f"{SERVER_STATUS.INTERNAL_SERVER_ERROR.MESSAGE}: {str(e)}"
-            }
+            # Fallback to JSON storage
+            try:
+                logger.info("Falling back to JSON storage due to error")
+                rel_doc = json_storage.get_player_team_by_id(relationship_id)
+
+                if not rel_doc:
+                    return {
+                        "status": SERVER_STATUS.NOT_FOUND.CODE,
+                        "message": "Player-team relationship not found"
+                    }
+
+                return {
+                    "status": SERVER_STATUS.SUCCESS.CODE,
+                    "message": SERVER_STATUS.SUCCESS.MESSAGE + " (offline mode - fallback)",
+                    "data": rel_doc
+                }
+            except Exception as fallback_error:
+                logger.error(f"Fallback also failed: {str(fallback_error)}")
+                return {
+                    "status": SERVER_STATUS.INTERNAL_SERVER_ERROR.CODE,
+                    "message": f"{SERVER_STATUS.INTERNAL_SERVER_ERROR.MESSAGE}: {str(e)}"
+                }
 
     def get_players_by_team(self, team_id: str) -> Dict[str, Any]:
         """Get all players in a specific team using Team and Player classes"""

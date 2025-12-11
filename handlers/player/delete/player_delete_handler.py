@@ -1,6 +1,8 @@
 from bson import ObjectId
 from typing import Dict, Any
 from classes.database.database import mongodb_service
+from classes.database.json_storage import json_storage
+from classes.database.sync_service import sync_service
 from classes.player.Player import Player
 from constants.response_constants import ServerStatus
 import logging
@@ -10,11 +12,50 @@ SERVER_STATUS = ServerStatus()
 
 class PlayerDeleteHandler:
     def __init__(self):
-        self.collection = mongodb_service.get_players_collection()
+        self.collection = None
+        self._update_collection()
+
+    def _update_collection(self):
+        """Update collection reference if not offline"""
+        if not mongodb_service.is_offline:
+            self.collection = mongodb_service.get_players_collection()
 
     def delete_player(self, player_id: str) -> Dict[str, Any]:
         """Delete a player using validation from Player class"""
         try:
+            # Check connection and try to sync if reconnected
+            if mongodb_service.check_connection():
+                self._update_collection()
+                if json_storage.has_data():
+                    logger.info("Connection restored - syncing JSON data to MongoDB")
+                    sync_service.sync_all_to_mongodb()
+
+            # If offline, use JSON storage
+            if mongodb_service.is_offline:
+                logger.info(f"Using local JSON storage to delete player {player_id}")
+
+                # Get player before deletion for response
+                existing_player = json_storage.get_player_by_id(player_id)
+                if not existing_player:
+                    return {
+                        "status": SERVER_STATUS.NOT_FOUND.CODE,
+                        "message": "Player not found"
+                    }
+
+                player_name = existing_player.get("name")
+                success = json_storage.delete_player(player_id)
+
+                if not success:
+                    return {
+                        "status": SERVER_STATUS.NOT_FOUND.CODE,
+                        "message": "Player not found or already deleted"
+                    }
+
+                return {
+                    "status": SERVER_STATUS.SUCCESS.CODE,
+                    "message": f"Player '{player_name}' deleted successfully (offline mode)"
+                }
+
             # Validate ObjectId format
             if not ObjectId.is_valid(player_id):
                 return {
@@ -64,10 +105,35 @@ class PlayerDeleteHandler:
             }
         except Exception as e:
             logger.error(f"Error deleting player {player_id}: {str(e)}")
-            return {
-                "status": SERVER_STATUS.INTERNAL_SERVER_ERROR.CODE,
-                "message": f"{SERVER_STATUS.INTERNAL_SERVER_ERROR.MESSAGE}: {str(e)}"
-            }
+            # On error, try JSON storage as fallback
+            try:
+                logger.info("Falling back to JSON storage due to error")
+                existing_player = json_storage.get_player_by_id(player_id)
+                if not existing_player:
+                    return {
+                        "status": SERVER_STATUS.NOT_FOUND.CODE,
+                        "message": "Player not found"
+                    }
+
+                player_name = existing_player.get("name")
+                success = json_storage.delete_player(player_id)
+
+                if not success:
+                    return {
+                        "status": SERVER_STATUS.NOT_FOUND.CODE,
+                        "message": "Player not found or already deleted"
+                    }
+
+                return {
+                    "status": SERVER_STATUS.SUCCESS.CODE,
+                    "message": f"Player '{player_name}' deleted successfully (offline mode)"
+                }
+            except Exception as fallback_error:
+                logger.error(f"Fallback also failed: {str(fallback_error)}")
+                return {
+                    "status": SERVER_STATUS.INTERNAL_SERVER_ERROR.CODE,
+                    "message": f"{SERVER_STATUS.INTERNAL_SERVER_ERROR.MESSAGE}: {str(e)}"
+                }
 
 # Create a global instance
 player_delete_handler = PlayerDeleteHandler()

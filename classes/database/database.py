@@ -11,6 +11,7 @@ class MongoDBService:
     def __init__(self):
         self.client = None
         self.database = None
+        self.is_offline = False
         self._connect()
 
     def _connect(self):
@@ -21,19 +22,54 @@ class MongoDBService:
 
             self.client = MongoClient(
                 uri,
-                server_api=ServerApi('1')
+                server_api=ServerApi('1'),
+                serverSelectionTimeoutMS=5000  # 5 second timeout
             )
 
             # Test the connection
             self.client.admin.command('ping')
             logger.info("Successfully connected to MongoDB!")
+            self.is_offline = False
 
             # Get the database
             self.database = self.client[settings.mongodb_database]
 
         except Exception as e:
             logger.error(f"Error connecting to MongoDB: {str(e)}")
-            raise e
+            logger.warning("Switching to offline mode - using local JSON storage")
+            self.is_offline = True
+            self.client = None
+            self.database = None
+
+    def check_connection(self) -> bool:
+        """Check if MongoDB connection is available"""
+        if self.is_offline:
+            # Try to reconnect
+            try:
+                uri = settings.mongodb_uri.replace("<db_username>", settings.mongodb_username).replace("<db_password>", settings.mongodb_password)
+                self.client = MongoClient(
+                    uri,
+                    server_api=ServerApi('1'),
+                    serverSelectionTimeoutMS=5000
+                )
+                self.client.admin.command('ping')
+                self.database = self.client[settings.mongodb_database]
+                self.is_offline = False
+                logger.info("Reconnected to MongoDB!")
+                return True
+            except Exception as e:
+                logger.debug(f"Still offline: {str(e)}")
+                return False
+
+        try:
+            if self.client:
+                self.client.admin.command('ping')
+                return True
+            return False
+        except Exception as e:
+            logger.warning(f"Lost connection to MongoDB: {str(e)}")
+            self.is_offline = True
+            return False
 
     def get_database(self) -> Database:
         """Get the MongoDB database instance"""
